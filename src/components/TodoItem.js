@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {Button, Glyphicon, ButtonGroup, ListGroupItem} from 'react-bootstrap';
 
 class TodoItem extends Component {
     constructor(props) {
@@ -7,13 +8,31 @@ class TodoItem extends Component {
         this.state = {
             value: props.value
         };
+
+        this.onDelete = this.onDelete.bind(this);
     } 
+
+    onDelete() {
+        console.log("item deleted");
+    }
+
+    onComplete() {
+        console.log("item completed");
+    }
 
     render() {
         return (
-            <li className="Todo-item">
+            <ListGroupItem className="Todo-item clearfix">
                 {this.state.value}
-            </li>
+                <ButtonGroup className="pull-right">                
+                    <Button bsStyle="link" onClick={this.onDelete}>
+                        <Glyphicon glyph="trash" />
+                    </Button>
+                    <Button bsStyle="link" onClick={this.onComplete}>
+                        <Glyphicon glyph="check" />
+                    </Button>
+                </ButtonGroup>
+            </ListGroupItem>
         );
     }
 }

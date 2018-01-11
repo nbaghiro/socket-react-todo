@@ -19,6 +19,14 @@ class App extends Component {
         add(item);
     }
 
+    onCompleteAll() {
+        console.log("Complete All from props");
+    }
+
+    onDeleteAll() {
+        console.log("Delete all from props");
+    }
+
     render() {
         return (
             <div className="App">
@@ -26,7 +34,7 @@ class App extends Component {
                     <img src={logo} className="App-logo" alt="logo" />
                     <h1 className="App-title">Welcome to Real-time Todo App</h1>
                 </header>
-                <TodoList onAdd={this.onAdd}/>
+                <TodoList onAdd={this.onAdd} onCompleteAll={this.onCompleteAll} onDeleteAll={this.onDeleteAll}/>
             </div>
         );
     }

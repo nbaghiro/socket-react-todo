@@ -23,6 +23,21 @@
   padding-top: 20px;
 }
 
+.Todo-item {
+  text-align: left;
+  padding-left: 20px;
+}
+
+.list-group {
+  width: 50%;  
+  margin:auto;
+}
+
+.input-group-btn {
+  min-width: 77px;
+}
+
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
