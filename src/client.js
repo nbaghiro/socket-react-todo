@@ -2,23 +2,51 @@ import io from 'socket.io-client';
 const server = io('http://localhost:8000');
 
 function add(item) {
-    // Emit the new todo as some data to the server
-    console.log("Emitting " + item);
     server.emit('make', {
         title : item
     });
-
-    // Clear the input
-    // TODO: refocus the element
 }
 
-function listenToServer() {
-	// NOTE: These are listeners for events from the server
-	// This event is for (re)loading the entire list of todos from the server
-	server.on('load', () => {
-	    console.log("Listening on load event");
+function completeAll() {
+	console.log("Complete all from props");
+	server.emit('completeAll');
+}
+
+function toggleStatusOne(todo) {
+	console.log("Toggle one from props");
+	server.emit('toggleStatusOne', todo);
+}
+
+function deleteAll() {
+	console.log("Delete all from props");
+	server.emit('deleteAll');
+}
+
+function deleteOne(todo) {
+	console.log("Delete one from props");
+	console.log(todo);
+	server.emit('deleteOne', todo);
+}
+
+function listenToServer(updateCB) {	
+	server.on('load', (todos) => {
+	    updateCB('load', todos);
 	});
+
+	server.on('itemAdded', (newTodo) => {
+		updateCB('itemAdded', newTodo);
+	});
+
+	/*server.on('itemDeleted', () => {
+		console.log("new item got added");
+		updateCB('itemDeleted');
+	});
+
+	server.on('itemCompleted', () => {
+		console.log("new item got added");
+		updateCB('itemCompleted');
+	});*/
 }
 	
 
-export { add, listenToServer };
+export { add, completeAll, toggleStatusOne, deleteAll, deleteOne, listenToServer };

@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import TodoItem from './TodoItem';
-import {ListGroup, ListGroupItem, FormControl, FormGroup, InputGroup, SplitButton, MenuItem} from 'react-bootstrap';
+import {ListGroup, ListGroupItem, FormControl, InputGroup, SplitButton, MenuItem} from 'react-bootstrap';
 
 class TodoList extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            value: ""
+            value: "",
+            todos: props.todos
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
-        this.handleCompleteAll = this.handleCompleteAll.bind(this);
-        this.handleDeleteAll = this.handleDeleteAll.bind(this);
+        //TODO: Focus FormControl
     }    
 
     handleChange(event) {
@@ -21,25 +21,23 @@ class TodoList extends Component {
     }
 
     handleAdd(event) {
-        console.log("todo item was submitted");
         this.props.onAdd(this.state.value);
+        this.setState({value: ""});
+        //TODO: Focus FormControl
     }
 
-    handleCompleteAll(event) {
-        console.log("complete all");
-        this.props.onCompleteAll();
-    }
-
-    handleDeleteAll(event) {
-        console.log("delete all");
-        this.props.onDeleteAll();
+    componentWillReceiveProps(nextProps) {
+        console.log("TodoList received new props");
+        this.setState({todos:nextProps.todos});
     }
 
     render() {
-    	const testVals = ["Do the dishes", "Code the world", "Go to the gym", "Have dinner"];
-    	const listItems = testVals.map((item) => {
-    		return <TodoItem value={item} />
+        const todos = this.state.todos;
+        console.log(todos);
+    	const listItems = todos.map((item) => {
+    		return <TodoItem onDelete={this.props.onDeleteOne} onToggleStatus={this.props.onToggleStatusOne} todo={item} />
     	});
+        console.log("TodoList will render");
 
         return (
             <div className="Todo-list">   
@@ -55,8 +53,8 @@ class TodoList extends Component {
                             />
                             <InputGroup.Button>
                                 <SplitButton title="Add" pullRight onClick={this.handleAdd}>
-                                    <MenuItem onClick={this.handleCompleteAll}>Complete All</MenuItem>
-                                    <MenuItem onClick={this.handleDeleteAll}>Delete All</MenuItem>
+                                    <MenuItem onClick={this.props.onCompleteAll}>Complete All</MenuItem>
+                                    <MenuItem onClick={this.props.onDeleteAll}>Delete All</MenuItem>
                                 </SplitButton>
                             </InputGroup.Button>
                         </InputGroup>

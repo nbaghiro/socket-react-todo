@@ -3,7 +3,6 @@ const firstTodos = require('../data');
 const Todo = require('./todo');
 
 server.on('connection', (client) => {
-    console.log("Client connected");
 	// This is going to be our fake 'database' for this application
     // Parse all default Todo's from db
 
@@ -11,27 +10,62 @@ server.on('connection', (client) => {
     // connections from the last time the server was run...
     const DB = firstTodos.map((t) => {
         // Form new Todo objects
-        return new Todo(title=t.title);
+        return new Todo(title=t.title, status=t.status);
         //return {title: t.title};
     });
 
+    console.log(DB);
+
 	// Sends a message to the client to reload all todos
     const reloadTodos = () => {
-        console.log("emitting reload");
         server.emit('load', DB);
     }
 
   	// Accepts when a client makes a new todo
-    client.on('make', (t) => {
-        console.log("new item got made");
-        // Make a new todo
-        const newTodo = new Todo(title=t.title);
-
-        // Push this newly created todo to our database
+    client.on('make', (item) => {
+        const newTodo = new Todo(title=item.title);
         DB.push(newTodo);
+        server.emit('itemAdded', newTodo);
+    });
 
-        // Send the latest todos to the client
-        // FIXME: This sends all todos every time, could this be more efficient?
+    client.on('completeAll', () => {
+        console.log("Complete All server call");
+        for (var i = 0; i < DB.length; i++) {
+            DB[i].status = "done";
+        }
+        console.log(DB);
+        reloadTodos();
+    });
+
+    client.on('toggleStatusOne', (item) => {
+        console.log("Toggle One server call");
+        for (var i = 0; i < DB.length; i++) {
+            let todo = DB[i];
+            if(todo.title === item.title) {
+                todo.status = (todo.status === "todo" ? "done" : "todo");
+            }
+        }
+        console.log(DB);
+        reloadTodos();
+    });
+
+    client.on('deleteAll', () => {
+        console.log("Delete All server call");
+        DB.splice(0, DB.length);
+        console.log(DB);
+        reloadTodos();
+    });
+
+    client.on('deleteOne', (item) => {
+        console.log("Delete One server call");
+        for (var i = 0; i < DB.length; i++) {
+            let todo = DB[i];
+            if(todo.title === item.title) {
+                break;
+            }
+        }
+        DB.splice(i, 1);
+        console.log(DB);
         reloadTodos();
     });
 

@@ -6,30 +6,27 @@ class TodoItem extends Component {
         super(props);
 
         this.state = {
-            value: props.value
+            todo: props.todo
         };
-
-        this.onDelete = this.onDelete.bind(this);
     } 
 
-    onDelete() {
-        console.log("item deleted");
-    }
-
-    onComplete() {
-        console.log("item completed");
+    componentWillReceiveProps(nextProps) {
+        console.log("TodoItem received new props");
+        this.setState({todo:nextProps.todo});
     }
 
     render() {
+        const todo =  this.state.todo;   
+        const isDone = todo.status === "done";
         return (
-            <ListGroupItem className="Todo-item clearfix">
-                {this.state.value}
+            <ListGroupItem bsStyle= {isDone ? "success" : ""} className="Todo-item">
+                {todo.title + (isDone ? " (Done!)" : "")}
                 <ButtonGroup className="pull-right">                
-                    <Button bsStyle="link" onClick={this.onDelete}>
+                    <Button bsStyle="link" onClick={()=>{this.props.onDelete(todo)}}>
                         <Glyphicon glyph="trash" />
                     </Button>
-                    <Button bsStyle="link" onClick={this.onComplete}>
-                        <Glyphicon glyph="check" />
+                    <Button bsStyle="link" onClick={()=>{this.props.onToggleStatus(todo)}}>
+                        <Glyphicon glyph={isDone ? "ok" : "check"} />
                     </Button>
                 </ButtonGroup>
             </ListGroupItem>

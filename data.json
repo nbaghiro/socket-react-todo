@@ -1,11 +1,14 @@
 [
     {
-        "title" : "Order more coffee"
+        "title" : "Order more coffee",
+        "status" : "todo"
     },
     {
-        "title" : "Clean the coffee machine"
+        "title" : "Clean the coffee machine",
+        "status" : "todo"
     },
     {
-        "title" : "Sweep the floor"
+        "title" : "Sweep the floor",
+        "status" : "done"
     }
 ]
