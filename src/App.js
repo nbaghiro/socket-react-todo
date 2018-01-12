@@ -9,20 +9,40 @@ class App extends Component {
         super(props);
 
         this.state = {
+            connected: false,
             loading: true,
             todos: []
         };
 
         this.updateCB = this.updateCB.bind(this);
+        this.handleOfflineCase = this.handleOfflineCase.bind(this);
 
         listenToServer(this.updateCB);
+
+        setTimeout(this.handleOfflineCase, 2000);
     } 
 
-    updateCB(event, data) {
+    handleOfflineCase() {
+        //After 2 seconds if socket is still not connected then we will assume that it fails to connect
+        if(!this.state.connected) {
+            let cachedTodos = JSON.parse(localStorage.getItem("todos"));
+            if(cachedTodos == null) {cachedTodos = [];}
+            this.setState({loading: false, todos: cachedTodos});
+        }
+    }
+
+    updateCB(event, data='') {
         console.log("UpdateCB called: " + event);
 
         let newTodos = this.state.todos;
+        let socketConnected = true;
         switch(event) {
+            case "connect":
+                socketConnected = true;
+                break;
+            case "disconnect":
+                socketConnected = false;
+                break;
             case "load":
                 newTodos = data;
                 break;
@@ -32,7 +52,8 @@ class App extends Component {
             default:
                 break;
         }
-        this.setState({todos: newTodos, loading: false});
+        localStorage.setItem("todos", JSON.stringify(newTodos));
+        this.setState({todos: newTodos, loading: false, connected: socketConnected});
     }
 
     onAdd(item) {
@@ -56,7 +77,6 @@ class App extends Component {
     }
 
     render() {
-        let curTodos = this.state.todos;
         return (
             <div className="App">
                 <header className="App-header">
@@ -65,14 +85,15 @@ class App extends Component {
                 </header>
                 {
                     this.state.loading ? 
-                    <div> Loading ...  </div> : 
+                    <div> Synching ...  </div> : 
                     <TodoList 
                         onAdd={this.onAdd} 
                         onCompleteAll={this.onCompleteAll} 
                         onToggleStatusOne={this.onToggleStatusOne} 
                         onDeleteAll={this.onDeleteAll}                    
                         onDeleteOne={this.onDeleteOne} 
-                        todos={curTodos}
+                        todos={this.state.todos}
+                        connected={this.state.connected}
                     />
                 }                
             </div>

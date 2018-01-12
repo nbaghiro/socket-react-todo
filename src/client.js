@@ -29,7 +29,15 @@ function deleteOne(todo) {
 }
 
 function listenToServer(updateCB) {	
-	server.on('load', (todos) => {
+	server.on('connect', () => {
+		updateCB('connect');
+	});
+
+	server.on('disconnect', () => {
+		updateCB('disconnect');
+	});
+
+	server.on('load', (todos) => {		
 	    updateCB('load', todos);
 	});
 

@@ -8,7 +8,8 @@ class TodoList extends Component {
 
         this.state = {
             value: "",
-            todos: props.todos
+            todos: props.todos,
+            connected: props.connected
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -28,7 +29,7 @@ class TodoList extends Component {
 
     componentWillReceiveProps(nextProps) {
         console.log("TodoList received new props");
-        this.setState({todos:nextProps.todos});
+        this.setState({todos: nextProps.todos, connected: nextProps.connected});
     }
 
     render() {
@@ -42,6 +43,12 @@ class TodoList extends Component {
         return (
             <div className="Todo-list">   
                 <ListGroup>
+                    {!this.state.connected ?
+                        <ListGroupItem bsStyle="warning">
+                            Offline Mode Activated. You will not be able to perform action on any Todo List item until we get back online 
+                        </ListGroupItem> :
+                        <div/>
+                    }
                     <ListGroupItem bsStyle="success">
                         <InputGroup>
                             <FormControl
