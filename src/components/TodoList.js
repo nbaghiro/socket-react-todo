@@ -22,13 +22,17 @@ class TodoList extends Component {
     }
 
     handleAdd(event) {
-        this.props.onAdd(this.state.value);
+        this.props.onAdd(this.inputField.value);
         this.setState({value: ""});
         //TODO: Focus FormControl
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({todos: nextProps.todos, connected: nextProps.connected});
+    }
+
+    componentDidUpdate(){
+        this.inputField.focus(); 
     }
 
     render() {
@@ -49,6 +53,7 @@ class TodoList extends Component {
                     <ListGroupItem bsStyle="success">
                         <InputGroup>
                             <FormControl
+                                inputRef={(ref) => {this.inputField = ref}}
                                 bsStyle=""
                                 type="text"
                                 value={this.state.value}
