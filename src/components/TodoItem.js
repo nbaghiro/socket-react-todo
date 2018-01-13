@@ -11,7 +11,6 @@ class TodoItem extends Component {
     } 
 
     componentWillReceiveProps(nextProps) {
-        console.log("TodoItem received new props");
         this.setState({todo:nextProps.todo});
     }
 

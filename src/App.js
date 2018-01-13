@@ -16,6 +16,11 @@ class App extends Component {
 
         this.updateCB = this.updateCB.bind(this);
         this.handleOfflineCase = this.handleOfflineCase.bind(this);
+        this.onAdd = this.onAdd.bind(this);
+        this.onCompleteAll = this.onCompleteAll.bind(this);
+        this.onToggleStatusOne = this.onToggleStatusOne.bind(this);
+        this.onDeleteAll = this.onDeleteAll.bind(this);
+        this.onDeleteOne = this.onDeleteOne.bind(this);
 
         listenToServer(this.updateCB);
 
@@ -32,14 +37,9 @@ class App extends Component {
     }
 
     updateCB(event, data='') {
-        console.log("UpdateCB called: " + event);
-
         let newTodos = this.state.todos;
         let socketConnected = true;
         switch(event) {
-            case "connect":
-                socketConnected = true;
-                break;
             case "disconnect":
                 socketConnected = false;
                 break;
@@ -57,22 +57,27 @@ class App extends Component {
     }
 
     onAdd(item) {
+        if(!this.state.connected) return;
         add(item);
     }
 
     onCompleteAll() {
+        if(!this.state.connected) return;
         completeAll();
     }
 
     onToggleStatusOne(todo) {
+        if(!this.state.connected) return;
         toggleStatusOne(todo);
     }
 
     onDeleteAll() {
+        if(!this.state.connected) return;
         deleteAll();
     }
 
     onDeleteOne(todo) {
+        if(!this.state.connected) return;
         deleteOne(todo);
     }
 

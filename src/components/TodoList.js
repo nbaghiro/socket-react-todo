@@ -28,17 +28,14 @@ class TodoList extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("TodoList received new props");
         this.setState({todos: nextProps.todos, connected: nextProps.connected});
     }
 
     render() {
         const todos = this.state.todos;
-        console.log(todos);
     	const listItems = todos.map((item) => {
     		return <TodoItem onDelete={this.props.onDeleteOne} onToggleStatus={this.props.onToggleStatusOne} todo={item} />
     	});
-        console.log("TodoList will render");
 
         return (
             <div className="Todo-list">   
