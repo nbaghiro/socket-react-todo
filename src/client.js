@@ -1,26 +1,26 @@
 import io from 'socket.io-client';
 const server = io('http://localhost:8000');
 
-function add(item) {
-    server.emit('make', {
-        title : item
-    });
-}
-
-function completeAll() {
-	server.emit('completeAll');
-}
-
-function toggleStatusOne(todo) {
-	server.emit('toggleStatusOne', todo);
-}
-
-function deleteAll() {
-	server.emit('deleteAll');
-}
-
-function deleteOne(todo) {
-	server.emit('deleteOne', todo);
+function callServer(event, data='') {
+	switch(event) {
+		case "make":
+			server.emit('make', data);	
+			break;
+		case "completeAll":
+			server.emit('completeAll');
+			break;
+		case "toggleStatusOne":
+			server.emit('toggleStatusOne', data);	
+			break;
+		case "deleteAll":
+			server.emit('deleteAll');
+			break;
+		case "deleteOne":
+			server.emit('deleteOne', data);	
+			break;
+		default:
+			break;
+	}
 }
 
 function listenToServer(updateCB) {	
@@ -40,14 +40,22 @@ function listenToServer(updateCB) {
 		updateCB('itemAdded', newTodo);
 	});
 
-	/*server.on('itemDeleted', () => {
-		updateCB('itemDeleted');
+	server.on('itemDeleted', (editedTodo) => {
+		updateCB('itemDeleted', editedTodo);
 	});
 
-	server.on('itemCompleted', () => {
-		updateCB('itemCompleted');
-	});*/
+	server.on('itemStatusToggled', (editedTodo) => {
+		updateCB('itemStatusToggled', editedTodo);
+	});
+
+	server.on('allCompleted', () => {
+		updateCB('allCompleted');
+	});
+
+	server.on('allDeleted', () => {
+		updateCB('allDeleted');
+	});
 }
 	
 
-export { add, completeAll, toggleStatusOne, deleteAll, deleteOne, listenToServer };
+export { callServer, listenToServer };

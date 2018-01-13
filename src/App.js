@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import TodoList from './components/TodoList';
-import {add, completeAll, toggleStatusOne, deleteAll, deleteOne, listenToServer} from './client';
+import {callServer, listenToServer} from './client';
 
 class App extends Component {
     constructor(props) {
@@ -28,7 +28,7 @@ class App extends Component {
     } 
 
     handleOfflineCase() {
-        //After 2 seconds if socket is still not connected then we will assume that it fails to connect
+        //After 2 seconds if socket is still not connected then we will assume that it failed to connect
         if(!this.state.connected) {
             let cachedTodos = JSON.parse(localStorage.getItem("todos"));
             if(cachedTodos == null) {cachedTodos = [];}
@@ -49,6 +49,31 @@ class App extends Component {
             case "itemAdded":               
                 newTodos.push(data);
                 break;
+            case "itemDeleted":               
+                for (var i = 0; i < newTodos.length; i++) {
+                    let todo = newTodos[i];
+                    if(todo.title === data.title) {
+                        break;
+                    }
+                }
+                newTodos.splice(i, 1);
+                break;
+            case "itemStatusToggled":               
+                for (let i = 0; i < newTodos.length; i++) {
+                    let todo = newTodos[i];
+                    if(todo.title === data.title) {
+                        todo.status = (todo.status === "todo" ? "done" : "todo");
+                    }
+                }
+                break;
+            case "allCompleted":               
+                for (let i = 0; i < newTodos.length; i++) {
+                    newTodos[i].status = "done";
+                }
+                break;
+            case "allDeleted":               
+                newTodos = [];
+                break;
             default:
                 break;
         }
@@ -58,27 +83,27 @@ class App extends Component {
 
     onAdd(item) {
         if(!this.state.connected) return;
-        add(item);
+        callServer("make", { title : item });
     }
 
     onCompleteAll() {
         if(!this.state.connected) return;
-        completeAll();
+        callServer("completeAll");
     }
 
     onToggleStatusOne(todo) {
         if(!this.state.connected) return;
-        toggleStatusOne(todo);
+        callServer("toggleStatusOne", todo);
     }
 
     onDeleteAll() {
         if(!this.state.connected) return;
-        deleteAll();
+        callServer("deleteAll");
     }
 
     onDeleteOne(todo) {
         if(!this.state.connected) return;
-        deleteOne(todo);
+        callServer("deleteOne", todo);
     }
 
     render() {
