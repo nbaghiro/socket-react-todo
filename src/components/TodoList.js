@@ -14,7 +14,6 @@ class TodoList extends Component {
 
         this.handleChange = this.handleChange.bind(this);
         this.handleAdd = this.handleAdd.bind(this);
-        //TODO: Focus FormControl
     }    
 
     handleChange(event) {
@@ -24,7 +23,6 @@ class TodoList extends Component {
     handleAdd(event) {
         this.props.onAdd(this.inputField.value);
         this.setState({value: ""});
-        //TODO: Focus FormControl
     }
 
     componentWillReceiveProps(nextProps) {

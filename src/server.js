@@ -4,12 +4,10 @@ const Todo = require('./todo');
 const fs = require('fs');
 
 function updateDataJson(data) {
-    console.log(data);
-    fs.writeFile("../data.json", data, function(err) {
+    fs.writeFile("data.json", JSON.stringify(data), (err) => {
         if(err) {
             return console.log(err);
         }
-
         console.log("The file was saved!");
     }); 
 }
@@ -17,13 +15,10 @@ function updateDataJson(data) {
 server.on('connection', (client) => {
 	// This is going to be our fake 'database' for this application
     // Parse all default Todo's from db
-
     const DB = firstTodos.map((t) => {
         return new Todo(title=t.title, status=t.status);
     });
-
-    console.log(DB);
-
+    
 	// Sends a message to the client to reload all todos
     const reloadTodos = () => {
         server.emit('load', DB);
